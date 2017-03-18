@@ -17,7 +17,7 @@ $(BINARY):
 
 # Installs our project: copies binaries.
 install:
-	go install ${LDFLAGS} -o "${BINARY}" ./...
+	go install
 
 test:
 	./"${BINARY}"
