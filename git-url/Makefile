@@ -17,7 +17,7 @@ $(BINARY):
 
 # Installs our project: copies binaries.
 install:
-	go install
+	go install ${LDFLAGS} ./...
 
 test:
 	./"${BINARY}"
@@ -25,5 +25,6 @@ test:
 # Cleans our project: deletes binaries.
 clean:
 	rm -f "${BINARY}"
+	go clean
 
 .PHONY: clean install test
