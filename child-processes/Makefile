@@ -1,5 +1,5 @@
 # This is how we want to name the binary output.
-BINARY = child-process
+BINARY = child-processes
 
 # These are the values we want to pass for VERSION and BUILD.
 VERSION = 1.0
@@ -19,10 +19,11 @@ $(BINARY):
 # Installs our project: copies binaries.
 # GOOS=linux GOARCH=amd64 go install ${LDFLAGS} -o "${BINARY}" ./...
 install:
-	go install ${LDFLAGS} -o "${BINARY}" ./...
+	go install ${LDFLAGS} ./...
 
 # Cleans our project: deletes binaries.
 clean:
 	rm -f "${BINARY}"
+	go clean
 
 .PHONY: clean install
