@@ -10,9 +10,9 @@ import (
 
 func main() {
 	out := ansi.NewWriter(os.Stdout)
-	out.Red().Bold().Println("tits")
+	out.Red().Bold().Println("rawr")
 	out.ForceReset()
-	fmt.Printf("Titties: %s\n", "wankey wank")
+	fmt.Printf("Cheese: %s\n", "la la la")
 	ExampleInit()
 }
 

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"net"
 	"os"
+	"regexp"
 
 	log "github.com/Sirupsen/logrus"
 	giturl "github.com/neechbear/gogiturl"
@@ -32,6 +33,18 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		rawurl := scanner.Text()
+
+		exp := regexp.MustCompile(`(?i)^/?((?:[a-z]+://|[a-z0-9_\.-@]+:).+)`)
+		match := exp.FindStringSubmatch(rawurl)
+
+		if len(match) >= 2 {
+			// Regular URL or Git@/scp style remoteRepo.
+			rawurl = match[1]
+		} else {
+			// Unqualified path only repo requires qualification a default
+			// remote, in this example git@github.com:
+			rawurl = "git@github.com:" + rawurl
+		}
 
 		u, err := giturl.Parse(rawurl)
 		if err != nil {
