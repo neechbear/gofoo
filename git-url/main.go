@@ -34,7 +34,7 @@ func main() {
 	for scanner.Scan() {
 		rawurl := scanner.Text()
 
-		exp := regexp.MustCompile(`(?i)^/?((?:[a-z]+://|[a-z0-9_\.-@]+:).+)`)
+		exp := regexp.MustCompile(`(?i)^/?((?:[a-z]+://|[\[\]a-z0-9_\.-@]+:).+)`)
 		match := exp.FindStringSubmatch(rawurl)
 
 		if len(match) >= 2 {
