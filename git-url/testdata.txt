@@ -38,3 +38,6 @@ user@[d:e:a:d::1]:/path/to/repo.git/
 user@host.xz:/path/to/repo.git/
 user@host.xz:~user/path/to/repo.git/
 user@host.xz:path/to/repo.git
+badurl://
+badurl:/
+badurl:
