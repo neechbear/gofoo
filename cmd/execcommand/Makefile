@@ -1,5 +1,5 @@
 # This is how we want to name the binary output.
-BINARY = child-processes
+BINARY = execcommand
 
 # These are the values we want to pass for VERSION and BUILD.
 VERSION = 1.0
