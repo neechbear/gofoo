@@ -10,7 +10,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	logrus_syslog "github.com/Sirupsen/logrus/hooks/syslog"
-	prefixed "github.com/x-cray/logrus-prefixed-formatter"
+	// prefixed "github.com/x-cray/logrus-prefixed-formatter"
+	prefixed "github.com/neechbear/logrus-prefixed-formatter"
 )
 
 func isTrue(s string) bool {
@@ -23,6 +24,24 @@ func isTrue(s string) bool {
 		return true
 	}
 	return false
+}
+
+func trace() string {
+	pc := make([]uintptr, 10) // at least 1 entry needed
+	runtime.Callers(2, pc)
+	f := runtime.FuncForPC(pc[0])
+	file, line := f.FileLine(pc[0])
+	return fmt.Sprintf("%s:%d/%s", path.Base(file), line, f.Name())
+}
+
+type traceLogPrefix struct{}
+
+func (p *traceLogPrefix) String() string {
+	pc := make([]uintptr, 10) // at least 1 entry needed
+	runtime.Callers(10, pc)
+	f := runtime.FuncForPC(pc[0])
+	file, line := f.FileLine(pc[0])
+	return fmt.Sprintf("%s:%d/%s", path.Base(file), line, f.Name())
 }
 
 func init() {
@@ -43,34 +62,19 @@ func init() {
 	}
 
 	if !log.IsTerminal(logOutput) {
-		log.SetFormatter(&log.TextFormatter{
+		log.SetFormatter(&prefixed.TextFormatter{
+			Level:            logLevel,
 			DisableColors:    true,
 			DisableTimestamp: true,
 		})
 	} else {
-		log.SetFormatter(&prefixed.TextFormatter{})
+		log.SetFormatter(&prefixed.TextFormatter{
+			Level: logLevel,
+		})
 	}
 
 	log.SetOutput(logOutput)
-	log.SetLevel(logLevel)
-}
-
-func trace() string {
-	pc := make([]uintptr, 10) // at least 1 entry needed
-	runtime.Callers(2, pc)
-	f := runtime.FuncForPC(pc[0])
-	file, line := f.FileLine(pc[0])
-	return fmt.Sprintf("%s:%d/%s", path.Base(file), line, f.Name())
-}
-
-type traceLogPrefix struct{}
-
-func (p *traceLogPrefix) String() string {
-	pc := make([]uintptr, 10) // at least 1 entry needed
-	runtime.Callers(10, pc)
-	f := runtime.FuncForPC(pc[0])
-	file, line := f.FileLine(pc[0])
-	return fmt.Sprintf("%s:%d/%s", path.Base(file), line, f.Name())
+	log.SetLevel(log.DebugLevel)
 }
 
 func main() {
