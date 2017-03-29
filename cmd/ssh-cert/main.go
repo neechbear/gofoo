@@ -214,30 +214,13 @@ func (n *nauth) GenerateUserCert(pkey, key []byte, teleportUsername string, allo
 	return ssh.MarshalAuthorizedKey(cert), nil
 }
 
-// buildPrincipals takes a hostID, nodeName, clusterName, and role and builds a list of
-// principals to insert into a certificate. This function is backward compatible with
-// older clients which means:
-//    * If RoleAdmin is in the list of roles, only a single principal is returned: hostID
-//    * If nodename is empty, it is not included in the list of principals.
-func buildPrincipals(hostID string, nodeName string, clusterName string, roles teleport.Roles) []string {
-	// TODO(russjones): This should probably be clusterName, but we need to
-	// verify changing this won't break older clients.
-	if roles.Include(teleport.RoleAdmin) {
-		return []string{hostID}
-	}
-
-	// always include the hostID, this is what teleport uses internally to find nodes
+func buildPrincipals(host string, domain string) []string {
 	principals := []string{
-		fmt.Sprintf("%v.%v", hostID, clusterName),
+		host,
 	}
-
-	// nodeName is the DNS name, this is for OpenSSH interoperability
-	if nodeName != "" {
-		principals = append(principals, fmt.Sprintf("%s.%s", nodeName, clusterName))
-		principals = append(principals, nodeName)
+	if domain != "" {
+		principals = append(principals, fmt.Sprintf("%s.%s", host, domain))
 	}
-
-	// deduplicate (in-case hostID and nodeName are the same) and return
 	return utils.Deduplicate(principals)
 }
 
